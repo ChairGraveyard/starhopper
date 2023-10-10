@@ -9,10 +9,10 @@ class BinaryReader:
 
     def read(self, size: int) -> bytes:
         self.offset += size
-        result = self.file.read(size)
-        if not result:
+        if result := self.file.read(size):
+            return result
+        else:
             raise EOFError("End of file")
-        return result
 
     @property
     def pos(self) -> int:
@@ -73,9 +73,7 @@ class BinaryReader:
                 break
             b.append(c)
         r = bytes(b)
-        if encoding:
-            return r.decode(encoding)
-        return r
+        return r.decode(encoding) if encoding else r
 
     def __enter__(self) -> "Capture":
         return Capture(self)

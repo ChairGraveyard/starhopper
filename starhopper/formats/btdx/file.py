@@ -134,10 +134,10 @@ class BA2Container(ArchiveContainer):
             else:
                 end = original.offset + original.unpacked_size
                 for chunk in range(original.offset, end, 4096):
-                    chunk = reader.read(4096)
-                    if not chunk:
+                    if chunk := reader.read(4096):
+                        destination.write(chunk)
+                    else:
                         break
-                    destination.write(chunk)
 
     @staticmethod
     def parse_header(reader: BinaryReader):

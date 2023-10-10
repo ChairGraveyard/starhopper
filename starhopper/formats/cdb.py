@@ -31,7 +31,7 @@ class CompiledDBContainer:
             header.bytes("magic", 4).ensure("magic", b"BETH").uint32(
                 "size"
             ).ensure("size", 8).uint32("version").uint32("record_count")
-            for i in range(header["record_count"] - 1):
+            for _ in range(header["record_count"] - 1):
                 with io as record:
                     self.records.append(
                         Record(

@@ -116,19 +116,17 @@ class Record:
         if self.flags & RecordFlag.Compressed:
             decompressed_size = self.file.io.uint32()
             with BytesIO(
-                zlib.decompress(
-                    self.file.io.read(self.size - 4),
-                    bufsize=decompressed_size,
-                )
-            ) as data:
+                        zlib.decompress(
+                            self.file.io.read(self.size - 4),
+                            bufsize=decompressed_size,
+                        )
+                    ) as data:
                 compressed_io = BinaryReader(data)
                 while compressed_io.pos < decompressed_size:
-                    field = self.file.parse_field(compressed_io)
-                    yield field
+                    yield self.file.parse_field(compressed_io)
         else:
             while self.file.io.pos < self.loc.end:
-                field = self.file.parse_field()
-                yield field
+                yield self.file.parse_field()
 
 
 @dataclasses.dataclass
@@ -239,16 +237,10 @@ class ESMContainer:
                 # 32bit size instead of the usual 16bit size. The XXXX field
                 # itself is not included in the size.
                 field.uint32("size").bytes("type", 4).skip(2)
-                if field["size"] == 0:
-                    field.set("data", b"")
-                else:
-                    field.bytes("data", field["size"])
+            if field["size"] == 0:
+                field.set("data", b"")
             else:
-                if field["size"] == 0:
-                    field.set("data", b"")
-                else:
-                    field.bytes("data", field["size"])
-
+                field.bytes("data", field["size"])
             return Field(
                 **field.data,
                 file=self,

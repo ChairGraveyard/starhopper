@@ -124,7 +124,7 @@ def mesh_to_obj(file: BinaryIO, destination: BinaryIO):
 
     # List of geometric vertices, with (x, y, z [,w]) coordinates, w is optional
     reader.seek(header.vertex_data.start)
-    for i in range(header.vertex_count):
+    for _ in range(header.vertex_count):
         x = reader.int16() * header.coordinate_scale / 32767
         y = reader.int16() * header.coordinate_scale / 32767
         z = reader.int16() * header.coordinate_scale / 32767
@@ -134,7 +134,7 @@ def mesh_to_obj(file: BinaryIO, destination: BinaryIO):
     # List of texture coordinates, in (u, v [,w]) coordinates, these will vary
     # between 0 and 1
     reader.seek(header.uv_data.start)
-    for i in range(header.uv_count):
+    for _ in range(header.uv_count):
         u = reader.half()
         v = reader.half()
 
@@ -147,7 +147,7 @@ def mesh_to_obj(file: BinaryIO, destination: BinaryIO):
     # b20 to b29 = (Z + 1.0) * 511.5
     # b30 to b31 = unknown, either 00 or 01
     reader.seek(header.normal_data.start)
-    for i in range(header.normal_count):
+    for _ in range(header.normal_count):
         # X10Y10Z10W2 format
         normal = reader.uint32()
         x = ((normal & 1023) / 511.5) - 1.0
@@ -158,7 +158,7 @@ def mesh_to_obj(file: BinaryIO, destination: BinaryIO):
 
     # List of triangle indices (3 per face), each index repeated three times separated by slashes
     reader.seek(header.triangle_data.start)
-    for i in range(header.triangle_count // 3):
+    for _ in range(header.triangle_count // 3):
         # I don't honestly know _why_ we always add +1 (maybe to ensure the
         # value is never less than 0?) but it's what all the blender examples
         # do, so c'est la vie.

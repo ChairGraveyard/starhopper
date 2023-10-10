@@ -17,8 +17,7 @@ class ESMViewerNode(QTreeWidgetItem):
 
         self.setText(0, group.label.decode("ascii"))
 
-        handler = get_all_records().get(group.label)
-        if handler:
+        if handler := get_all_records().get(group.label):
             self.setText(0, handler.label())
             self.setForeground(0, QBrush(ColorGreen))
         else:
